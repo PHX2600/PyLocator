@@ -1,0 +1,13 @@
+==Configuration==
+
+Setup apropriate variables in the Locator.py script
+
+==Install==
+
+1) Enter Locator directory
+2) ./install
+
+The script will be installed into /etc/cron.hourly and /etc/rc.local.
+The script should run once an hour and immediately after boot(but it wont, see TO DO).
+Thats it.
+

@@ -1,0 +1,6 @@
+
+Soon:
+This script needs an active network connection to function properly, meaning it needs to check and make sure theres a network connection before it executes. This is especially important when considering theft issues, if a person has stolen your laptoip but cannot login this script needs to take action to activate a network interface BEFORE login so that it can send out information.
+
+Later:
+Make configuration easier

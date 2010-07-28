@@ -1,0 +1,102 @@
+#!/bin/bash
+
+if [ ! $UID -eq 0 ]; then
+	echo "This script requires root access to continue."
+	exit
+fi
+
+#Redhat and frends or UBANT-O?
+if [ -e /etc/redhat-release ]; then
+	distro="Redhat"
+elif [ -e /etc/lsb-release ]; then
+	distro="Ubuntu"
+fi
+
+clear
+
+echo "Insalling Locator for " $distro on `uname -m`
+
+if [ $distro == "Ubuntu" ]; then
+
+	echo
+	echo "Configuring Dependencies for Ubuntu..."
+	echo
+	
+	if [ ! -z "`dpkg -s sendmail | grep 'not installed'`" ]; then
+		echo
+		echo "Installing sendmail..."
+		echo
+		apt-get install sendmail	
+	fi
+
+	if [ ! -z "`dpkg -s python-mysqldb | grep 'not.installed'`" ]; then
+		echo
+		echo "Installing mysqldb module..."
+		echo
+		apt-get install python-mysqldb
+	fi
+fi
+
+if [ $distro == "Redhat" ]; then
+
+	echo
+	echo "Configuring Dependencies for Redhat..."
+	echo
+
+	if [ ! -z "`rpm -q sendmail | grep 'not installed'`" ]; then
+		echo
+		echo "Installing sendmail..."
+		echo
+		yum install sendmail
+	fi
+	if [ ! -z "`rpm -q MySQL-python | grep 'not installed'`" ]; then
+		yum install MySQL-python
+		echo
+		echo "Installing mysqldb module..."
+		echo
+	fi
+fi
+
+if [ ! -e /root/bin/Locator.py ]; then
+	echo
+	echo "Installing Script..."
+	echo
+
+	mkdir -p /root/bin 2>/dev/null
+	/bin/cp ./Locator.py /root/bin
+else
+	echo
+	echo "Script Already Installed..."
+	echo
+fi
+
+if [ ! "`cat /etc/rc.local | grep /root/bin/Locator.py`" ] ; then
+	echo
+	echo "Configuring System..."
+	echo
+	cat /etc/rc.local | grep "exit 0" -v > /tmp/rc.tmp
+	mv /tmp/rc.tmp /etc/rc.local
+	echo "python /root/bin/Locator.py" >> /etc/rc.local
+	echo "exit 0" >> /etc/rc.local
+else
+	echo
+	echo "System Already Configured..."
+	echo
+fi
+
+if [ ! -e /etc/cron.hourly/Locator.py ]; then
+	echo
+	echo "Configuring Cron..."
+	echo
+	ln -s /root/bin/Locator.py /etc/cron.hourly/Locator.py
+else
+	echo
+	echo "Cron Already Configured..."
+	echo
+fi
+
+echo
+echo "Done"
+echo
+
+exit
